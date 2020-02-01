@@ -1,0 +1,98 @@
+import org.apache.commons.lang3.StringUtils;
+
+class Book {
+
+	String c;
+	String cl;
+	Double y;
+	String m;
+	String mo;
+	String t;
+	String a;
+
+
+	@Override
+	public String toString() {
+		return "Book [corp=" + c + ", client=" + cl + ", year=" + y + ", make=" + m + ", model=" + mo
+				+ ", trim=" + t + ", acode=" + a + "]";
+	}
+
+}
+
+public class Program {
+	String findAllFiltered(String corp, String client, Double year, String make, String model, String trim,
+			String acode) {
+
+		String query = "SELECT * FROM book";
+
+		if (!StringUtils.isEmpty(corp) || !StringUtils.isEmpty(client) || !(year == null) || !StringUtils.isEmpty(make)
+				|| !StringUtils.isEmpty(model) || !StringUtils.isEmpty(trim) || !StringUtils.isEmpty(acode)) {
+			query = query + " WHERE";
+		}
+
+		if (!StringUtils.isEmpty(corp)) {
+			query = query + " corp LIKE '%" + corp + "%'";
+		}
+
+		if (!StringUtils.isEmpty(client)) {
+			if (!StringUtils.isEmpty(corp)) {
+				query = query + " AND";
+			}
+			query = query + " client LIKE '%" + client + "%'";
+		}
+		if (year != null) {
+			if (!StringUtils.isEmpty(corp) || !StringUtils.isEmpty(client)) {
+				query = query + " AND";
+			}
+			query = query + " year LIKE '%" + year + "%'";
+		}
+		if (!StringUtils.isEmpty(make)) {
+			if (!StringUtils.isEmpty(corp) || !StringUtils.isEmpty(client) || year != null) {
+				query = query + " AND";
+			}
+			query = query + " make LIKE '%" + make + "%'";
+		}
+
+		if (!StringUtils.isEmpty(model)) {
+			if (!StringUtils.isEmpty(corp) || !StringUtils.isEmpty(client) || year != null
+					|| !StringUtils.isEmpty(make)) {
+				query = query + " AND";
+			}
+			query = query + " model LIKE '%" + model + "%'";
+		}
+		if (!StringUtils.isEmpty(trim)) {
+			if (!StringUtils.isEmpty(corp) || !StringUtils.isEmpty(client) || year != null || !StringUtils.isEmpty(make)
+					|| !StringUtils.isEmpty(model)) {
+				query = query + " AND";
+			}
+			query = query + " trim LIKE '%" + trim + "%'";
+		}
+
+		if (!StringUtils.isEmpty(acode)) {
+			if (!StringUtils.isEmpty(corp) || !StringUtils.isEmpty(client) || year != null || !StringUtils.isEmpty(make)
+					|| !StringUtils.isEmpty(model) || !StringUtils.isEmpty(trim)) {
+				query = query + " AND";
+			}
+			query = query + " acode LIKE '%" + acode + "%'";
+		}
+
+		return query;
+	}
+
+	public static void main(String[] args) {
+
+		Program p = new Program();
+
+		System.out.println("ALL: "
+				+ p.findAllFiltered("corp11", "client22", new Double(2023), "make33", "model44", "trim55", "acode66"));
+
+		System.out.println("Corp :make :acode " + p.findAllFiltered("corp11", "", null, "make33", "", "", "acode66"));
+
+		System.out.println("Make :acode " + p.findAllFiltered("", "", null, "make33", "", "", "acode66"));
+
+		System.out.println(":acode :year" + p.findAllFiltered("", "", new Double(2019), "", "", "", "acode66"));
+
+		System.out.println("All Null" + p.findAllFiltered("", "client", null, "", "", "", ""));
+
+	}
+}
